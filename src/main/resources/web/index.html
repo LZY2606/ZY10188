@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>缸压相位镜</title>
+<link rel="stylesheet" href="/web/style.css" />
+</head>
+<body>
+<header>
+  <h1>缸压相位镜</h1>
+  <div class="sub">
+    <span id="runMeta"></span>
+    <span id="phaseBadge" class="badge">相位未确认</span>
+  </div>
+  <div class="actions">
+    <button id="btnReload">重新分析</button>
+    <button id="btnImport">重导入 fixture</button>
+    <button id="btnExport">导出运行记录</button>
+    <button id="btnReplay" class="ghost">回放导出文件</button>
+    <input type="file" id="fileReplay" accept="application/json" hidden />
+    <button id="btnClear" class="danger">清空数据库</button>
+  </div>
+</header>
+
+<section class="controls">
+  <div class="ctl-group">
+    <strong>缺齿模式</strong>
+    <div id="candidateList" class="row"></div>
+  </div>
+  <div class="ctl-group">
+    <strong>上止点锦标</strong>
+    <div id="tdcList" class="row"></div>
+  </div>
+  <div class="ctl-group">
+    <strong>循环相位微调</strong>
+    <div class="row">
+      循环 <input id="offsetCycle" type="number" min="0" step="1" style="width:5em" />
+      偏移 <input id="offsetDeg" type="number" step="0.5" style="width:6em" /> °
+      <button id="btnOffset">应用偏移</button>
+    </div>
+  </div>
+  <div class="ctl-group">
+    <strong>饱和段</strong>
+    <div id="satInfo" class="row"></div>
+  </div>
+</section>
+
+<section class="panels">
+  <div class="panel">
+    <h2>原始时域信号</h2>
+    <canvas id="rawChart" width="760" height="300"></canvas>
+    <div class="legend">
+      <span class="sw pressure"></span>缸压
+      <span class="sw sat"></span>饱和
+      <span class="sw ref"></span>参考缺齿标记
+      <span class="sw tdc"></span>TDC 锦标
+      <span class="sw gap"></span>不确定跨距
+      <span class="sw rpm"></span>转速(右轴)
+    </div>
+  </div>
+  <div class="panel">
+    <h2>齿间隔</h2>
+    <canvas id="gapChart" width="760" height="300"></canvas>
+    <div class="legend">
+      <span class="sw normal"></span>正常齿距
+      <span class="sw gapdot"></span>缺齿跨距（彩色按跨距数）
+      <span class="muted">纵轴为瞬时转速 rpm</span>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>角域压力（按循环）</h2>
+    <canvas id="angleChart" width="760" height="300"></canvas>
+    <div class="legend">
+      <span class="sw peg"></span>归零窗 [390°,450°)
+      <span class="sw sat"></span>饱和样本（下界）
+      <span class="muted">点击图例循环可聚焦</span>
+    </div>
+  </div>
+  <div class="panel">
+    <h2>多循环包络</h2>
+    <canvas id="envChart" width="760" height="300"></canvas>
+    <div class="legend">
+      <span class="sw envmax"></span>最大
+      <span class="sw envmean"></span>均值
+      <span class="sw envmin"></span>最小
+      <span class="sw sat"></span>任一循环饱和
+    </div>
+  </div>
+</section>
+
+<section class="metrics">
+  <h2>循环指标（保留算法与标定版本）</h2>
+  <table id="metricTable">
+    <thead>
+      <tr>
+        <th>循环</th><th>候选</th><th>状态</th>
+        <th>峰压 (bar)</th><th>峰压角 (°ATDC)</th>
+        <th>最大压升率 (bar/°)</th><th>CA50 (°ATDC)</th>
+        <th>归零偏移 (bar)</th><th>说明</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+  <div id="versionBar" class="versions"></div>
+</section>
+
+<section class="audit">
+  <h2>操作审计</h2>
+  <table id="auditTable">
+    <thead><tr><th>#</th><th>时间</th><th>操作</th><th>内容</th></tr></thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<script src="/web/app.js"></script>
+</body>
+</html>
